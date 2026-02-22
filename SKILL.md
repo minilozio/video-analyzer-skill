@@ -52,7 +52,7 @@ A tool to download, transcribe, and analyze videos from any platform using a sma
 When the user asks you to summarize, transcribe, or download a video/audio from a URL, use the bundled python script:
 
 ```bash
-uv run {baseDir}/scripts/analyze_video.py --action <ACTION> --url "<URL>" [--quality <fast|normal|high|max>] [--lang <en|it|etc>]
+uv run {baseDir}/scripts/analyze_video.py --action <ACTION> --url "<URL>" [--quality <normal|max>] [--lang <en|it|etc>]
 ```
 
 ### Supported Actions:

@@ -55,7 +55,7 @@ This skill relies on standard open-source tools. OpenClaw will attempt to instal
 
 ## 🎛️ Quality Presets for Local Transcription
 
-If the skill falls back to local Whisper transcription, it uses the `base.en` model by default (fast and accurate for English). You can ask your agent to use different quality presets based on your hardware:
+If the skill falls back to local Whisper transcription, it uses the multilingual `base` model by default. Two quality options:
 
 - **Normal:** `--quality normal` — Fast (~1 min for 30 min video) - *Default*
 - **Max:** `--quality max` — Best quality (~5 min for 30 min video)
