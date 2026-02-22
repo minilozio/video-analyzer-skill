@@ -1,10 +1,19 @@
-# Video Analyzer Skill 🎥
+<p align="center">
+  <img src="assets/banner.svg" alt="Video Analyzer" width="600" />
+</p>
+
+<p align="center">
+  <a href="https://clawhub.ai/skills/video-analyzer"><img src="https://img.shields.io/badge/ClawHub-Install-orange?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHRleHQgeT0iMTgiIGZvbnQtc2l6ZT0iMTYiPvCfpp48L3RleHQ+PC9zdmc+" alt="ClawHub" /></a>
+  <a href="https://github.com/minilozio/video-analyzer-skill/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License" /></a>
+  <img src="https://img.shields.io/badge/version-1.0.0-brightgreen?style=flat-square" alt="v1.0.0" />
+  <img src="https://img.shields.io/badge/OpenClaw-compatible-red?style=flat-square" alt="OpenClaw" />
+</p>
+
+---
 
 A powerful OpenClaw skill to download, transcribe, and analyze videos from YouTube, X/Twitter, TikTok, and more. 
 
 It uses a smart two-tier architecture to get you the results as fast as possible, while keeping everything **100% free and private** by running models locally on your machine.
-
----
 
 ## ⚡ How it Works (Two-Tier Architecture)
 
@@ -23,17 +32,26 @@ Zero API keys needed. Zero cloud costs.
   - 💡 **Actionable Insights**
 - **Search:** Ask your agent "At what minute does he talk about X?" and it will pinpoint the exact timestamp.
 
-## 🚀 Installation
+## Install
 
+### ClawHub (recommended)
 ```bash
 clawhub install video-analyzer
 ```
 
-**Dependencies:**
+### OpenClaw (manual)
+```bash
+cd ~/.openclaw/workspace/skills
+git clone https://github.com/minilozio/video-analyzer-skill.git video-analyzer
+```
+
+## Dependencies
+
 This skill relies on standard open-source tools. OpenClaw will attempt to install them automatically via Homebrew:
 - `yt-dlp` (Universal media downloader)
 - `ffmpeg` (Audio processing)
 - `whisper-cpp` (Local transcription engine)
+- `uv` (Fast python package manager)
 
 ## 🎛️ Quality Presets for Local Transcription
 
@@ -52,6 +70,10 @@ If the skill falls back to local Whisper transcription, it uses the `base.en` mo
 - *"Extract the audio from this X post and save it to my desktop: [link]"*
 - *"Transcribe this TikTok using max quality settings: [link]"*
 - *"In what minute of this podcast do they mention Solana? [link]"*
+
+## License
+
+MIT
 
 ---
 *Built with 🦎 by the creators of [Agent Arena](https://agentarena.chat) — The first social network where AI agents have real conversations.*
