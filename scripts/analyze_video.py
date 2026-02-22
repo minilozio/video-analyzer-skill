@@ -12,10 +12,8 @@ from pathlib import Path
 # --- Configuration ---
 MODELS_DIR = Path("/opt/homebrew/share/whisper-cpp")
 WHISPER_MODELS = {
-    "fast": "ggml-tiny.bin",
-    "normal": "ggml-base.en.bin",
-    "high": "ggml-medium.bin",
-    "max": "ggml-large-v3-turbo.bin"
+    "normal": "ggml-base.bin",       # 142MB - multilingual, fast (~1 min for 30 min video)
+    "max": "ggml-large-v3-turbo.bin" # 3GB - multilingual, best quality (~5 min for 30 min video)
 }
 WHISPER_BASE_URL = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/"
 
@@ -79,6 +77,39 @@ def clean_vtt(vtt_path, txt_path):
     with open(txt_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(cleaned))
 
+def srt_to_timestamped_txt(srt_path, txt_path):
+    """Convert SRT subtitle file to timestamped text [MM:SS] format."""
+    with open(srt_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Parse SRT blocks (number, timestamp, text, blank line)
+    blocks = content.strip().split('\n\n')
+    lines = []
+    
+    for block in blocks:
+        block_lines = block.strip().split('\n')
+        if len(block_lines) >= 3:
+            # Line 0: sequence number (skip)
+            # Line 1: timestamp like "00:01:23,450 --> 00:01:25,000"
+            # Line 2+: text
+            timestamp_line = block_lines[1]
+            text = ' '.join(block_lines[2:]).strip()
+            
+            # Extract start time and format as [MM:SS]
+            match = re.match(r'(\d{2}):(\d{2}):(\d{2})', timestamp_line)
+            if match:
+                hours, mins, secs = match.groups()
+                if hours == "00":
+                    timestamp = f"[{mins}:{secs}]"
+                else:
+                    timestamp = f"[{hours}:{mins}:{secs}]"
+                
+                if text:
+                    lines.append(f"{timestamp} {text}")
+    
+    with open(txt_path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(lines))
+
 def handle_transcript(url, quality, lang):
     """Two-tier transcript extraction."""
     # Create temp dir based on URL hash
@@ -125,20 +156,22 @@ def handle_transcript(url, quality, lang):
     
     # 3. Check/Download Model
     model_filename = WHISPER_MODELS.get(quality, WHISPER_MODELS["normal"])
-    if lang != 'en' and '.en' in model_filename:
-        model_filename = model_filename.replace('.en', '') # Fallback to multilingual
-        
+    # All models are now multilingual by default, no .en fallback needed
     model_path = download_model_if_needed(model_filename)
     
-    # 4. Transcribe
+    # 4. Transcribe (SRT for timestamps)
     print(f"Transcribing using {model_filename}... (this may take a moment)", file=sys.stderr)
-    txt_out = tmp_dir / "transcript"
+    srt_out = tmp_dir / "transcript"
     lang_flag = f"-l {lang}" if lang != 'en' else ""
     
-    run_cmd(f"whisper-cli -m '{model_path}' -f '{audio_wav}' {lang_flag} --output-txt --output-file '{txt_out}'")
+    run_cmd(f"whisper-cli -m '{model_path}' -f '{audio_wav}' {lang_flag} --output-srt --output-file '{srt_out}'")
     
+    srt_file = tmp_dir / "transcript.srt"
     final_txt = tmp_dir / "transcript.txt"
-    if final_txt.exists():
+    
+    if srt_file.exists():
+        # Convert SRT to timestamped text
+        srt_to_timestamped_txt(srt_file, final_txt)
         print(f"SUCCESS: Transcript saved to:\n{final_txt}")
     else:
         print("Transcription failed.", file=sys.stderr)
@@ -171,7 +204,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Video Analyzer for OpenClaw")
     parser.add_argument("--url", required=True, help="Video URL")
     parser.add_argument("--action", required=True, choices=["transcript", "download-video", "download-audio"])
-    parser.add_argument("--quality", choices=["fast", "normal", "high", "max"], default="normal", help="Whisper model quality")
+    parser.add_argument("--quality", choices=["normal", "max"], default="normal", help="Whisper model: normal (fast) or max (best quality)")
     parser.add_argument("--lang", default="en", help="Language code (e.g., 'en', 'it')")
     
     args = parser.parse_args()

@@ -25,7 +25,7 @@ Zero API keys needed. Zero cloud costs.
 ## 🛠️ Features
 
 - **Download:** Save any video as MP4 or extract the audio as MP3/M4A.
-- **Transcribe:** Get accurate, timestamped transcripts of any video.
+- **Transcribe:** Get accurate transcripts with **precise timestamps** (`[MM:SS] text`).
 - **Analyze:** The agent automatically processes the transcript to give you a structured summary:
   - 📝 **TL;DR**
   - ⏱️ **Key Moments** (with timestamps)
@@ -57,10 +57,10 @@ This skill relies on standard open-source tools. OpenClaw will attempt to instal
 
 If the skill falls back to local Whisper transcription, it uses the `base.en` model by default (fast and accurate for English). You can ask your agent to use different quality presets based on your hardware:
 
-- **Fast:** `--quality fast` (tiny model, ~75MB RAM)
-- **Normal:** `--quality normal` (base model, ~150MB RAM) - *Default*
-- **High:** `--quality high` (medium model, ~1.5GB RAM)
-- **Max:** `--quality max` (large-v3-turbo, ~3GB RAM, studio quality)
+- **Normal:** `--quality normal` — Fast (~1 min for 30 min video) - *Default*
+- **Max:** `--quality max` — Best quality (~5 min for 30 min video)
+
+Both models are **multilingual**. Send a video in Italian, Japanese, or Spanish — it just works.
 
 *Models are automatically downloaded to `/opt/homebrew/share/whisper-cpp/` on first use.*
 
@@ -76,4 +76,4 @@ If the skill falls back to local Whisper transcription, it uses the `base.en` mo
 MIT
 
 ---
-*Built with 🦎 by the creators of [Agent Arena](https://agentarena.chat) — The first social network where AI agents have real conversations.*
+*Built with 🦎 by [minilozio](https://github.com/minilozio)*
